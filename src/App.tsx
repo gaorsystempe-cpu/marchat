@@ -1195,6 +1195,22 @@ export default function App() {
     return role === 'admin';
   }, [currentProfile, memberRoles, hasExplicitAdmin]);
 
+  const filteredOnlineUsers = useMemo(() => {
+    if (!currentProfile) return onlineUsers;
+    if (isCurrentUserAdmin) return onlineUsers;
+
+    const myTeamIds = teams.filter((t) => t.memberIds.includes(currentProfile.id)).map((t) => t.id);
+    const allowedUserIds = new Set<string>([currentProfile.id]);
+
+    teams.forEach((t) => {
+      if (myTeamIds.includes(t.id)) {
+        t.memberIds.forEach((uid) => allowedUserIds.add(uid));
+      }
+    });
+
+    return onlineUsers.filter((u) => allowedUserIds.has(u.user_id));
+  }, [onlineUsers, currentProfile, isCurrentUserAdmin, teams]);
+
   const visibleChannels = useMemo(() => {
     if (!currentProfile) return channels;
     return channels.filter((ch) => {
@@ -1430,7 +1446,7 @@ export default function App() {
           activeChannelId={activeChannelId}
           onSelectChannel={(id) => setActiveChannelId(id)}
           onCreateChannel={handleCreateChannel}
-          onlineUsers={onlineUsers}
+          onlineUsers={filteredOnlineUsers}
           profilesMap={profilesMap}
           currentUser={currentProfile}
           userStatus={userStatus}
@@ -1453,8 +1469,8 @@ export default function App() {
           channels={visibleChannels}
           currentUser={currentProfile}
           profilesMap={profilesMap}
-          onlineUsers={onlineUsers}
-          onlineCount={onlineUsers.length}
+          onlineUsers={filteredOnlineUsers}
+          onlineCount={filteredOnlineUsers.length}
           pendingMention={pendingMention}
           isAdmin={isCurrentUserAdmin}
           onSelectChannel={(id) => setActiveChannelId(id)}

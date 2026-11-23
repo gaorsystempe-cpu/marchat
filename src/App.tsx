@@ -1213,18 +1213,27 @@ export default function App() {
 
   const visibleChannels = useMemo(() => {
     if (!currentProfile) return channels;
+    if (isCurrentUserAdmin) return channels;
+
+    const myTeamIds = teams.filter((t) => t.memberIds.includes(currentProfile.id)).map((t) => t.id);
+    const allowedChannelIds = new Set<number>();
+    teams.forEach((t) => {
+      if (myTeamIds.includes(t.id)) {
+        t.channelIds.forEach((chId) => allowedChannelIds.add(chId));
+      }
+    });
+
     return channels.filter((ch) => {
       if (isDirectMessageChannel(ch.name)) {
         const parts = ch.name.slice(3).split(':');
         return parts.includes(currentProfile.id);
       }
-      if (!ch.is_private) return true;
-      if (isCurrentUserAdmin) return true;
+      if (allowedChannelIds.has(ch.id)) return true;
       const members = channelMembersMap[ch.id];
-      if (!members || members.length === 0) return true;
-      return members.includes(currentProfile.id);
+      if (members && members.includes(currentProfile.id)) return true;
+      return false;
     });
-  }, [channels, currentProfile, isCurrentUserAdmin, channelMembersMap]);
+  }, [channels, currentProfile, isCurrentUserAdmin, teams, channelMembersMap]);
 
   useEffect(() => {
     activeChannelIdRef.current = activeChannelId;

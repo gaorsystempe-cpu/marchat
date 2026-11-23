@@ -218,7 +218,7 @@ export function getLocalOnlineUsers(currentUser: Profile): OnlineUser[] {
 export function loadActiveLocalSession(): Profile | null {
   cleanupLegacyDemoStorage();
   try {
-    const raw = sessionStorage.getItem(STORAGE_SESSION_KEY);
+    const raw = localStorage.getItem(STORAGE_SESSION_KEY);
     if (!raw) return null;
     return JSON.parse(raw) as Profile;
   } catch {
@@ -229,9 +229,9 @@ export function loadActiveLocalSession(): Profile | null {
 export function saveActiveLocalSession(profile: Profile | null): void {
   try {
     if (!profile) {
-      sessionStorage.removeItem(STORAGE_SESSION_KEY);
+      localStorage.removeItem(STORAGE_SESSION_KEY);
     } else {
-      sessionStorage.setItem(STORAGE_SESSION_KEY, JSON.stringify(profile));
+      localStorage.setItem(STORAGE_SESSION_KEY, JSON.stringify(profile));
     }
   } catch {
     // ignore storage errors

@@ -1,0 +1,6 @@
+{
+  "name": "EquipoChat",
+  "description": "Espacio de comunicación en tiempo real para tu equipo con canales, archivos compartidos y presencia en línea.",
+  "requestFramePermissions": [],
+  "majorCapabilities": []
+}

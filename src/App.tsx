@@ -689,12 +689,24 @@ export default function App() {
       return { error: 'Ya existe un canal con ese nombre.' };
     }
 
+    const welcomeBody = `✨ Canal #${name} creado. ¡Bienvenidos! Este espacio está listo para recibir mensajes y coordinar en equipo.`;
+
     if (!isSupabaseConfigured) {
       const created: Channel = { id: Date.now(), name, is_private: isPrivate };
       setChannels((prev) => [...prev, created]);
       if (isPrivate && currentProfile) {
         setChannelMembersMap((prev) => ({ ...prev, [created.id]: [currentProfile.id] }));
       }
+      const welcomeMsg: Message = {
+        id: Date.now() + 1,
+        channel_id: created.id,
+        user_id: currentProfile?.id || 'system',
+        body: welcomeBody,
+        file_path: null,
+        file_name: null,
+        created_at: new Date().toISOString(),
+      };
+      setPreviewMessages((prev) => [...prev, welcomeMsg]);
       setActiveChannelId(created.id);
       return {};
     }
@@ -727,6 +739,15 @@ export default function App() {
           [created.id]: [...(prev[created.id] || []), currentProfile.id],
         }));
       }
+
+      if (currentProfile) {
+        await supabase.from('messages').insert({
+          channel_id: created.id,
+          user_id: currentProfile.id,
+          body: welcomeBody,
+        });
+      }
+
       setChannels((prev) => (prev.some((c) => c.id === created.id) ? prev : [...prev, created]));
       setActiveChannelId(created.id);
     }

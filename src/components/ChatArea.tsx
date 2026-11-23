@@ -27,6 +27,7 @@ import {
   Trash2,
   Users,
   X,
+  RotateCw,
 } from 'lucide-react';
 import {
   Channel,
@@ -1438,6 +1439,16 @@ export const ChatArea: React.FC<ChatAreaProps> = ({
                   }`}
                 />
                 <span className="font-mono tabular-nums">{pinnedMessages.length}</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => window.location.reload()}
+                className="p-2 rounded-lg text-[#5B21B6] dark:text-[#DDD6FE] hover:bg-[#F5F3FF] dark:hover:bg-[#292466] transition-colors min-h-[38px] min-w-[38px] flex items-center justify-center"
+                title="Actualizar / Recargar la ventana"
+                aria-label="Actualizar ventana"
+              >
+                <RotateCw className="w-4 h-4" />
               </button>
             </>
           )}

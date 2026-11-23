@@ -13,7 +13,7 @@
   #root {
     height: 100%;
     font-family: var(--font-sans);
-    overscroll-behavior-y: contain;
+    overscroll-behavior-y: auto;
     -webkit-tap-highlight-color: transparent;
   }
 

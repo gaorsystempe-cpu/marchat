@@ -151,7 +151,7 @@ export function usernameToSyntheticEmail(username: string): string {
     .normalize('NFD')
     .replace(/[\u0300-\u036f]/g, '')
     .replace(/[^a-z0-9._-]/g, '');
-  return `${clean}@equipo.local`;
+  return `${clean}@mar-chat.app`;
 }
 
 export function normalizePhone(phone: string): string {
